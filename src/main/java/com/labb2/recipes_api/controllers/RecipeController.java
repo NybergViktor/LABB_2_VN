@@ -64,6 +64,7 @@ public class RecipeController {
         }
     }
 
+    //test
 
     // Delete
     @DeleteMapping("/{id}")
@@ -93,8 +94,10 @@ public class RecipeController {
     // filtrea ingredients
     //gör på samma sätt men ingr
     // List<Recipe> findByIngredientsIn(@RequestParam List<String> ingredients
-
-
+    @GetMapping("/searchIngredients")
+    public List<Recipe> findIngredientsInRecipe(@RequestParam List<String> ingredients){
+        return recipeService.findIngredientsInRecipe(ingredients);
+    }
 
 
 

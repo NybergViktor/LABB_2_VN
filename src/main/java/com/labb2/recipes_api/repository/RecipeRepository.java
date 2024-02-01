@@ -10,5 +10,6 @@ public interface RecipeRepository extends MongoRepository<Recipe, String> {
     // så att vi kan filtrera på taggar
 
     List<Recipe> findByTagsIn(List<String> tags);
+    List<Recipe> findIngredientsInRecipe(List<String> ingredients);
 
 }

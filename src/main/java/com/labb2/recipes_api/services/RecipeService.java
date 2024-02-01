@@ -74,6 +74,10 @@ public class RecipeService {
     }
 
 
+    //find ingredients
+    public List<Recipe> findIngredientsInRecipe(List<String> ingredients){
+        return recipeRepository.findIngredientsInRecipe(ingredients);
+    }
 
 
 
