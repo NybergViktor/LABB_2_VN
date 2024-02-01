@@ -1,15 +1,18 @@
 package com.labb2.recipes_api.controllers;
 
+import com.labb2.recipes_api.exception.EntityNotFoundException;
 import com.labb2.recipes_api.models.Comment;
 import com.labb2.recipes_api.models.Recipe;
 import com.labb2.recipes_api.services.RecipeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/recipes")
@@ -37,6 +40,62 @@ public class RecipeController {
     public List<Recipe> getAllRecipes(){
         return recipeService.getAllRecipes();
     }
+
+
+    // Get by id
+    @GetMapping("/{id}")
+    public ResponseEntity<Recipe> getRecipyById(@PathVariable String id){
+        Optional<Recipe> recipe = recipeService.getRecipeById(id);
+        return recipe.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
+
+
+
+    // PUT (update)
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateRecipe(@PathVariable String id, @Valid @RequestBody Recipe recipeDetails){
+        try{
+            Recipe updatedRecipe = recipeService.updateRecipe(id, recipeDetails);
+            return ResponseEntity.ok(updatedRecipe);
+        }catch (EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+
+    // Delete
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteRecipe(@PathVariable String id){
+        recipeService.deleteRecipe(id);
+        return ResponseEntity.ok("Recipe with id " + id + " has been deleted!");
+    }
+
+    // GET filtrera på taggar
+    @GetMapping("/search")
+    public List<Recipe> findRecipebyTags(@RequestParam List<String> tags){
+        return recipeService.findRecipesByTags(tags);
+    }
+
+
+    // GET , Pagination och sortering
+    @GetMapping
+    public Page<Recipe> getRecipeWithPaginationAndSorting(@RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "10") int size,
+                                                          @RequestParam(defaultValue = "id") String sortBy){
+        return recipeService.getRecipeWithPaginationAndSorting(page, size, sortBy);
+    }
+
+
+
+
+    // filtrea ingredients
+    //gör på samma sätt men ingr
+    // List<Recipe> findByIngredientsIn(@RequestParam List<String> ingredients
+
+
+
 
 
 
